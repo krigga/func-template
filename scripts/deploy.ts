@@ -1,11 +1,10 @@
-import { toNano } from "ton";
-import { Distributor } from "../factories/Distributor";
-import { addressFromStateInit, messageToCell, randomAddress, tonDeepLink } from "../softhat/src/utils";
+import { beginCell, storeStateInit, toNano } from "ton";
+import { Distributor } from "../wrappers/Distributor";
+import { tonDeepLink } from "../deploton/src/utils";
+import { randomAddress } from "@ton-community/test-utils";
 
 const main = async () => {
-    const factory = new Distributor();
-
-    const stateInit = await factory.stateInit({
+    const distributor = await Distributor.createFromConfig({
         owner: randomAddress(),
         seed: 0,
         shares: [{
@@ -15,9 +14,9 @@ const main = async () => {
             comment: '',
         }],
         processingPrice: toNano('0.05'),
-    });
+    })
 
-    console.log(tonDeepLink(addressFromStateInit(stateInit), toNano('0.05'), undefined, messageToCell(stateInit)));
-};
+    console.log(tonDeepLink(distributor.address, toNano('0.05'), undefined, beginCell().storeWritable(storeStateInit(distributor.init!)).endCell()))
+}
 
-main();
+main()
