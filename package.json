@@ -5,8 +5,7 @@
   "license": "MIT",
   "scripts": {
     "test": "yarn jest",
-    "deploy": "yarn ts-node ./scripts/deploy.ts",
-    "deploton": "yarn ts-node ./deploton/src/cli.ts"
+    "deploy": "yarn ts-node ./scripts/deploy.ts"
   },
   "devDependencies": {
     "@ton-community/func-js": "^0.4.0",
