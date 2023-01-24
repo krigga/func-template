@@ -607,6 +607,13 @@
   resolved "https://registry.yarnpkg.com/@ton-community/test-utils/-/test-utils-0.0.1.tgz#49e74a7b4b15a806826381b6b42f915db380dd00"
   integrity sha512-Uhy2a85Y7uKzyfnu4R7gDfzcB1K380nAxQdTodIyGbbE7D8f2pdJV7RFh4EujvnAfo+QX3ofA702sNYl/TTT8Q==
 
+"@ton-community/tinfoil@^0.0.1-alpha.0":
+  version "0.0.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@ton-community/tinfoil/-/tinfoil-0.0.1-alpha.0.tgz#885448d8bc54b14410d97678c2538d2db8257730"
+  integrity sha512-sun2nlOFFFqRtIgzlBmzpHDB6PZaEpCChNki967ASzyoApPuqC1/CbuKfUoa72UAtysG+OOW5RzimYvI0Jzijw==
+  dependencies:
+    arg "^5.0.2"
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.9.tgz#df4907fc07a886922637b15e02d4cebc4c0021b2"

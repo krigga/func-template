@@ -1,6 +1,6 @@
 import { beginCell, storeStateInit, toNano } from "ton";
 import { Distributor } from "../wrappers/Distributor";
-import { tonDeepLink } from "../deploton/src/utils";
+import { tonDeepLink } from "@ton-community/tinfoil";
 import { randomAddress } from "@ton-community/test-utils";
 
 const main = async () => {
