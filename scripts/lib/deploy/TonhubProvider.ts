@@ -46,7 +46,7 @@ export class TonhubProvider implements DeployProvider {
 
         const createdSession = await this.connector.createNewSession({
             name: 'TON template project',
-            url: '',
+            url: 'https://example.com/',
         })
 
         ui.updateBottomBar("Connecting to wallet...\n");
@@ -78,6 +78,11 @@ export class TonhubProvider implements DeployProvider {
 
     async connect() {
         this.session = await this.getSession()
+        ui.log.write(
+            `Connected to wallet at address: ${Address.parse(
+                this.session.wallet.address
+            ).toString()}\n`
+        );
     }
 
     async sendTransaction(address: Address, amount: bigint, payload?: Cell, stateInit?: StateInit) {
@@ -93,10 +98,14 @@ export class TonhubProvider implements DeployProvider {
             stateInit: stateInit ? beginCell().storeWritable(storeStateInit(stateInit)).endCell().toBoc().toString('base64') : undefined,
         }
 
+        ui.updateBottomBar("Sending transaction. Approve it in your wallet...");
+
         const response = await this.connector.requestTransaction(request)
 
         if (response.type !== 'success') {
             throw new Error(`Tonhub transaction request was not successful (${response.type})`)
         }
+
+        ui.updateBottomBar("Sent transaction");
     }
 }
