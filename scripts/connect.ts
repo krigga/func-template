@@ -6,20 +6,20 @@ import TonConnect, {
 } from "@tonconnect/sdk";
 import fs from "fs/promises";
 import inquirer from "inquirer";
-import {
-  Address,
-  beginCell,
-  Cell,
-  StateInit,
-  storeStateInit,
-  toNano,
-  TonClient,
-} from "ton";
+import { Address, beginCell, Cell, StateInit, storeStateInit } from "ton";
 import { tonDeepLink } from "@ton-community/tinfoil";
 import { ui } from "./deploy";
-import { getHttpEndpoint } from "@orbs-network/ton-access";
 import path from "path";
 
+export interface CLIConnectProvider {
+  connect(): Promise<void>;
+  sendTransaction(
+    address: string,
+    amount: string,
+    payload?: Cell | undefined,
+    stateInit?: StateInit | undefined
+  ): Promise<void>;
+}
 class Storage implements IStorage {
   _path = path.join(process.cwd(), "temp", "connect");
 
@@ -133,16 +133,6 @@ export class TonConnectProvider implements CLIConnectProvider {
 
     ui.log.write("Sent transaction");
   }
-}
-
-export interface CLIConnectProvider {
-  connect(): Promise<void>;
-  sendTransaction(
-    address: string,
-    amount: string,
-    payload?: Cell | undefined,
-    stateInit?: StateInit | undefined
-  ): Promise<void>;
 }
 
 export class DeeplinkProvider implements CLIConnectProvider {
