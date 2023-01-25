@@ -5,7 +5,7 @@ import {
   CLIConnectProvider,
   TonConnectProvider,
   DeeplinkProvider,
-} from "./connect";
+} from "./lib/connect";
 import inquirer from "inquirer";
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 
@@ -43,11 +43,11 @@ const main = async () => {
       message: "How will you deploy your contract?",
       choices: [
         {
-          name: "TON Connect - Use your mobile wallet",
+          name: "TON Connect compatible mobile wallet (example: Tonkeeper)",
           value: "TC",
         },
         {
-          name: "ton:// deep link",
+          name: "Create a ton:// deep link",
           value: "deepLink",
         },
       ],

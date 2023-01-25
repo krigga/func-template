@@ -8,7 +8,7 @@ import fs from "fs/promises";
 import inquirer from "inquirer";
 import { Address, beginCell, Cell, StateInit, storeStateInit } from "ton";
 import { tonDeepLink } from "@ton-community/tinfoil";
-import { ui } from "./deploy";
+import { ui } from "../deploy";
 import path from "path";
 
 export interface CLIConnectProvider {
