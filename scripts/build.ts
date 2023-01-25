@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 import inquirer from "inquirer";
 import path from "path";
-import { Cell } from "ton";
 import { ui } from "./lib/ui";
 
 const wrappersDir = path.join(process.cwd(), "wrappers");

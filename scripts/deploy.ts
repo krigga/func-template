@@ -2,13 +2,10 @@ import { ui } from "./lib/ui";
 import { Address, toNano, TonClient } from "ton";
 import { Distributor } from "../wrappers/Distributor";
 import { randomAddress } from "@ton-community/test-utils";
-import {
-    CLIConnectProvider,
-    TonConnectProvider,
-    DeeplinkProvider,
-} from "./lib/connect";
 import inquirer from "inquirer";
 import { getHttpEndpoint } from "@orbs-network/ton-access";
+import { DeeplinkProvider } from "./lib/deploy/DeeplinkProvider";
+import { TonConnectProvider } from "./lib/deploy/TonConnectProvider";
 
 const main = async () => {
     const distributor = await Distributor.createFromConfig({
@@ -29,7 +26,10 @@ const main = async () => {
         "Deploying contract to address: " + distributor.address.toString()
     );
 
-    const { deploy, network } = await inquirer.prompt([
+    const { provider, network }: {
+        provider: DeeplinkProvider,
+        network: 'mainnet' | 'testnet',
+    } = await inquirer.prompt([
         {
             type: "list",
             name: "network",
@@ -43,28 +43,15 @@ const main = async () => {
             choices: [
                 {
                     name: "TON Connect compatible mobile wallet (example: Tonkeeper)",
-                    value: "TC",
+                    value: new TonConnectProvider(),
                 },
                 {
                     name: "Create a ton:// deep link",
-                    value: "deepLink",
+                    value: new DeeplinkProvider(),
                 },
             ],
         },
     ]);
-
-    let provider: CLIConnectProvider;
-
-    switch (deploy) {
-        case "deepLink":
-            provider = new DeeplinkProvider();
-            break;
-        case "TC":
-            provider = new TonConnectProvider();
-            break;
-        default:
-            throw new Error("Unknown option");
-    }
 
     try {
         await provider.connect();
@@ -77,8 +64,8 @@ const main = async () => {
 
     try {
         await provider.sendTransaction(
-            distributor.address.toString(),
-            toNano("0.05").toString(),
+            distributor.address,
+            toNano("0.05"),
             undefined,
             distributor.init!
         );
