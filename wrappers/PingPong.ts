@@ -12,7 +12,7 @@ export function pingPongConfigToCell(config: PingPongConfig): Cell {
         .endCell()
 }
 
-export async function compilePingPong(): Promise<Cell> {
+export async function compile(): Promise<Cell> {
     const cr = await compileFunc({
         targets: ['contracts/ping_pong.fc'],
         sources: (path: string) => readFileSync(path).toString(),
@@ -40,7 +40,7 @@ export class PingPong implements Contract {
     }
 
     static async createFromConfig(config: PingPongConfig, workchain = 0) {
-        const code = await compilePingPong()
+        const code = await compile()
         const data = pingPongConfigToCell(config)
         const init = { code, data }
         return new PingPong(contractAddress(workchain, init), init)
