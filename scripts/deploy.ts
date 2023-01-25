@@ -7,9 +7,20 @@ import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { DeeplinkProvider } from "./lib/deploy/DeeplinkProvider";
 import { TonConnectProvider } from "./lib/deploy/TonConnectProvider";
 import { TonhubProvider } from "./lib/deploy/TonhubProvider";
-import { sleep } from "./lib/utils";
+import { oneOrZeroOf, sleep } from "./lib/utils";
+import arg from "arg";
+import { DeployProvider } from "./lib/deploy/DeployProvider";
 
 const main = async () => {
+    const args = arg({
+        '--mainnet': Boolean,
+        '--testnet': Boolean,
+
+        '--tonconnect': Boolean,
+        '--deeplink': Boolean,
+        '--tonhub': Boolean,
+    })
+
     const distributor = await Distributor.createFromConfig({
         owner: randomAddress(),
         seed: 0,
@@ -28,36 +39,70 @@ const main = async () => {
         "Deploying contract to address: " + distributor.address.toString()
     );
 
-    const { network }: { network: 'mainnet' | 'testnet' } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "network",
-            message: "Which network are you deploying on?",
-            choices: ["mainnet", "testnet"],
-        },
-    ]);
+    let network = oneOrZeroOf({
+        mainnet: args['--mainnet'],
+        testnet: args['--testnet'],
+    })
 
-    const { provider }: { provider: DeeplinkProvider } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "provider",
-            message: "How will you deploy your contract?",
-            choices: [
-                {
-                    name: "TON Connect compatible mobile wallet (example: Tonkeeper)",
-                    value: new TonConnectProvider(),
-                },
-                {
-                    name: "Create a ton:// deep link",
-                    value: new DeeplinkProvider(),
-                },
-                {
-                    name: "Tonhub wallet",
-                    value: new TonhubProvider(network),
-                }
-            ],
-        },
-    ]);
+    if (!network) {
+        const { network: promptNetwork }: { network: 'mainnet' | 'testnet' } = await inquirer.prompt([
+            {
+                type: "list",
+                name: "network",
+                message: "Which network are you deploying on?",
+                choices: ["mainnet", "testnet"],
+            },
+        ]);
+
+        network = promptNetwork
+    }
+
+    let deployUsing = oneOrZeroOf({
+        tonconnect: args['--tonconnect'],
+        deeplink: args['--deeplink'],
+        tonhub: args['--tonhub'],
+    })
+
+    if (!deployUsing) {
+        const { deployUsing: promtDeployUsing }: { deployUsing: 'tonconnect' | 'deeplink' | 'tonhub' } = await inquirer.prompt([
+            {
+                type: "list",
+                name: "deployUsing",
+                message: "How will you deploy your contract?",
+                choices: [
+                    {
+                        name: "TON Connect compatible mobile wallet (example: Tonkeeper)",
+                        value: 'tonconnect',
+                    },
+                    {
+                        name: "Create a ton:// deep link",
+                        value: 'deeplink',
+                    },
+                    {
+                        name: "Tonhub wallet",
+                        value: 'tonhub',
+                    }
+                ],
+            },
+        ]);
+
+        deployUsing = promtDeployUsing
+    }
+
+    let provider: DeployProvider;
+    switch (deployUsing) {
+        case 'deeplink':
+            provider = new DeeplinkProvider();
+            break;
+        case 'tonconnect':
+            provider = new TonConnectProvider();
+            break;
+        case 'tonhub':
+            provider = new TonhubProvider(network);
+            break;
+        default:
+            throw new Error('Unknown deploy option');
+    }
 
     try {
         await provider.connect();
@@ -109,4 +154,4 @@ const main = async () => {
     }
 };
 
-main();
+main().catch(e => console.error(e));
