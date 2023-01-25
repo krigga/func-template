@@ -56,7 +56,7 @@ export function distributorConfigToCell(config: DistributorConfig): Cell {
         .endCell()
 }
 
-export async function compileDistributor(): Promise<Cell> {
+export async function compile(): Promise<Cell> {
     const cr = await compileFunc({
         targets: ['contracts/distributor.fc'],
         sources: (path: string) => readFileSync(path).toString(),
@@ -78,7 +78,7 @@ export class Distributor implements Contract {
     }
 
     static async createFromConfig(config: DistributorConfig, workchain = 0) {
-        const code = await compileDistributor()
+        const code = await compile()
         const data = distributorConfigToCell(config)
         const init = { code, data }
         return new Distributor(contractAddress(workchain, init), init)
