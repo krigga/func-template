@@ -6,6 +6,8 @@ import inquirer from "inquirer";
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { DeeplinkProvider } from "./lib/deploy/DeeplinkProvider";
 import { TonConnectProvider } from "./lib/deploy/TonConnectProvider";
+import { TonhubProvider } from "./lib/deploy/TonhubProvider";
+import { sleep } from "./lib/utils";
 
 const main = async () => {
     const distributor = await Distributor.createFromConfig({
@@ -26,19 +28,19 @@ const main = async () => {
         "Deploying contract to address: " + distributor.address.toString()
     );
 
-    const { provider, network }: {
-        provider: DeeplinkProvider,
-        network: 'mainnet' | 'testnet',
-    } = await inquirer.prompt([
+    const { network }: { network: 'mainnet' | 'testnet' } = await inquirer.prompt([
         {
             type: "list",
             name: "network",
             message: "Which network are you deploying on?",
             choices: ["mainnet", "testnet"],
         },
+    ]);
+
+    const { provider }: { provider: DeeplinkProvider } = await inquirer.prompt([
         {
             type: "list",
-            name: "deploy",
+            name: "provider",
             message: "How will you deploy your contract?",
             choices: [
                 {
@@ -49,6 +51,10 @@ const main = async () => {
                     name: "Create a ton:// deep link",
                     value: new DeeplinkProvider(),
                 },
+                {
+                    name: "Tonhub wallet",
+                    value: new TonhubProvider(network),
+                }
             ],
         },
     ]);
@@ -78,11 +84,6 @@ const main = async () => {
     const tc = new TonClient({
         endpoint: await getHttpEndpoint({ network }),
     });
-
-    const sleep = (ms: number) =>
-        new Promise((resolve) => {
-            setTimeout(resolve, ms);
-        });
 
     for (let i = 1; i <= 10; i++) {
         ui.updateBottomBar(`Awaiting contract deployment... [Attempt ${i}/10]`);

@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "yarn jest",
-    "deploy": "yarn ts-node ./scripts/deploy.ts",
-    "build": "yarn ts-node ./scripts/build.ts"
+    "test": "jest",
+    "deploy": "ts-node ./scripts/deploy.ts",
+    "build": "ts-node ./scripts/build.ts"
   },
   "devDependencies": {
     "@orbs-network/ton-access": "^2.2.2",

@@ -12,7 +12,7 @@ import path from "path";
 import { DeployProvider } from "./DeployProvider";
 
 class Storage implements IStorage {
-    _path = path.join(process.cwd(), "temp", "connect");
+    _path = path.join(process.cwd(), "temp", "tonconnect");
 
     async setItem(key: string, value: string): Promise<void> {
         await fs.mkdir(this._path, { recursive: true });
@@ -35,17 +35,17 @@ function isRemote(walletInfo: WalletInfo): walletInfo is WalletInfoRemote {
 }
 
 export class TonConnectProvider implements DeployProvider {
-    connector = new TonConnect({
+    private connector = new TonConnect({
         storage: new Storage(),
         manifestUrl:
-        "https://raw.githubusercontent.com/ton-defi-org/tonconnect-manifest-temp/main/tonconnect-manifest.json", // TODO TC2 should enable passing contents directly
+            "https://raw.githubusercontent.com/ton-defi-org/tonconnect-manifest-temp/main/tonconnect-manifest.json", // TODO TC2 should enable passing contents directly
     });
 
     async connect(): Promise<void> {
         await this._connect();
         ui.log.write(
             `Connected to wallet at address: ${Address.parse(
-            this.connector.wallet!.account.address
+                this.connector.wallet!.account.address
             ).toString()}\n`
         );
     }
