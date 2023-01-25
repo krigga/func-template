@@ -609,10 +609,12 @@
   resolved "https://registry.npmjs.org/@ton-community/sandbox/-/sandbox-0.2.0.tgz"
   integrity sha512-pG9F/8mkw8cwC7c2eRAa9byXTDWFohMhT+7d0a61WA1tp/68lXk6anhftnY/y8viAcXoHRsjcKja36EVjm49FQ==
 
-"@ton-community/test-utils@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.npmjs.org/@ton-community/test-utils/-/test-utils-0.0.1.tgz"
-  integrity sha512-Uhy2a85Y7uKzyfnu4R7gDfzcB1K380nAxQdTodIyGbbE7D8f2pdJV7RFh4EujvnAfo+QX3ofA702sNYl/TTT8Q==
+"@ton-community/test-utils@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@ton-community/test-utils/-/test-utils-0.0.2.tgz#ee0ef19738f329c5111b730e40f8d6432f71f6be"
+  integrity sha512-cQikP/6nvgH7UhFMqncCY9Xrxup1iEoqzZ6u91Ji3c4Y3Yy4NAeH93FAZtM/E2QRSFM4nrNTWzHQzvbs2ntBsA==
+  dependencies:
+    node-inspect-extracted "^2.0.0"
 
 "@ton-community/tinfoil@^0.0.1-alpha.1":
   version "0.0.1-alpha.1"
@@ -2066,6 +2068,11 @@ node-fetch@^2.6.1, node-fetch@^2.6.7:
   integrity sha512-RZ6dBYuj8dRSfxpUSu+NsdF1dpPpluJxwOp+6IoDp/sH2QNDSvurYsAa+F1WxY2RjA1iP93xhcsUoYbF2XBqVg==
   dependencies:
     whatwg-url "^5.0.0"
+
+node-inspect-extracted@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/node-inspect-extracted/-/node-inspect-extracted-2.0.0.tgz#b7082b11d330665c5f5f24d6038829769479d1c8"
+  integrity sha512-AqyYYkLvcFALwaU/5L/TPV2JOLpPqt8CW03FnFbQzXrYA9MNEjWdqZX21VXFR3ZSYcI42wdvCyNTkkfhj7oE9g==
 
 node-int64@^0.4.0:
   version "0.4.0"
