@@ -1,6 +1,9 @@
 import { compileFunc } from "@ton-community/func-js";
+import { randomAddress } from "@ton-community/test-utils";
+import { assert } from "console";
 import { readFileSync } from "fs";
-import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Dictionary, DictionaryValue, Sender, SendMode, toNano } from "ton-core";
+import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Dictionary, DictionaryValue, OpenedContract, Sender, SendMode, toNano } from "ton-core";
+import { ui } from "../scripts/lib/ui";
 
 export type DistributorShare = { address: Address, factor: number, base: number, comment: string }
 
@@ -67,6 +70,27 @@ export async function compile(): Promise<Cell> {
     return Cell.fromBase64(cr.codeBoc)
 }
 
+export async function create() {
+    return Distributor.createFromConfig({
+        owner: Address.parse("EQDKh53EejfT72JatL9HvrOw_7mUpNLFmrMgeAd15FIMBqnb"), //randomAddress(),
+        seed: 0,
+        shares: [
+            {
+                address: Address.parse("EQDKh53EejfT72JatL9HvrOw_7mUpNLFmrMgeAd15FIMBqnb"), // randomAddress(),
+                base: 1,
+                factor: 1,
+                comment: "",
+            },
+        ],
+        processingPrice: toNano("0.05"),
+    });
+}
+
+export async function testDeployment(distributor: OpenedContract<Distributor>): Promise<void> {
+    const processingPrice = await distributor.getProcessingPrice();
+    ui.log.write("Processing price: " + processingPrice.toString());
+}
+
 export class Distributor implements Contract {
     constructor(
         readonly address: Address,
@@ -123,6 +147,10 @@ export class Distributor implements Contract {
                 .storeUint(0x59da2019, 32)
                 .endCell(),
         })
+    }
+
+    async getProcessingPrice(provider: ContractProvider): Promise<BigInt> {
+        return (await provider.get("processing_price", [])).stack.readBigNumber();
     }
 
     async getBalance(provider: ContractProvider) {

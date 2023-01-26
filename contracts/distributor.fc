@@ -88,3 +88,8 @@ global int ctx_seed;
         }
     } until (~ notfail);
 }
+
+(int) processing_price() method_id {
+    load_data();
+    return ctx_processing_price;
+}

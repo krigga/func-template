@@ -1,6 +1,7 @@
 import { compileFunc } from "@ton-community/func-js";
 import { readFileSync } from "fs";
-import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode, Slice } from "ton-core";
+import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, OpenedContract, Sender, SendMode, Slice } from "ton-core";
+import { ui } from "../scripts/lib/ui";
 
 export type PingPongConfig = {
     id: number // to distinguish different ping pong instances
@@ -21,6 +22,15 @@ export async function compile(): Promise<Cell> {
     if (cr.status === 'error') throw new Error(cr.message)
 
     return Cell.fromBase64(cr.codeBoc)
+}
+
+export async function create() {
+    return PingPong.createFromConfig({id: 1})
+}
+
+export async function testDeployment(pingPong: OpenedContract<PingPong>): Promise<void> {
+    const id = await pingPong.getId();
+    ui.log.write("Id: " + id.toString());
 }
 
 export const Opcodes = {
@@ -77,5 +87,9 @@ export class PingPong implements Contract {
                 .storeSlice(params.message ?? new Cell().beginParse())
                 .endCell(),
         })
+    }
+
+    async getId(provider: ContractProvider) {
+        return (await provider.get("id", [])).stack.readBigNumber();
     }
 }
