@@ -42,7 +42,7 @@ export async function selectContract(contract?: string) {
             {
               type: "list",
               name: "contract",
-              message: "Which contract do you want to build?",
+              message: "Choose contract",
               choices: contracts,
             },
           ]);
