@@ -1,7 +1,5 @@
 import { ui } from "./lib/ui";
 import { Address, toNano, TonClient } from "ton";
-import { Distributor } from "../wrappers/Distributor";
-import { randomAddress } from "@ton-community/test-utils";
 import inquirer from "inquirer";
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { DeeplinkProvider } from "./lib/deploy/DeeplinkProvider";

@@ -72,11 +72,11 @@ export async function compile(): Promise<Cell> {
 
 export async function create() {
     return Distributor.createFromConfig({
-        owner: Address.parse("EQDKh53EejfT72JatL9HvrOw_7mUpNLFmrMgeAd15FIMBqnb"), //randomAddress(),
+        owner: randomAddress(),
         seed: 0,
         shares: [
             {
-                address: Address.parse("EQDKh53EejfT72JatL9HvrOw_7mUpNLFmrMgeAd15FIMBqnb"), // randomAddress(),
+                address: randomAddress(),
                 base: 1,
                 factor: 1,
                 comment: "",
