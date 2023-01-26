@@ -1,52 +1,23 @@
+import arg from "arg";
 import fs from "fs/promises";
-import inquirer from "inquirer";
 import path from "path";
 import { ui } from "./lib/ui";
-import { findContracts, wrappersDir } from "./lib/utils";
-
+import { selectContract, wrappersDir } from "./lib/utils";
 
 const buildDir = path.join(process.cwd(), "build");
 
 const main = async () => {
-  let selectedContract = process.argv[2];
-  const contracts = await findContracts();
+  const args = arg({
+    "--contract": String,
+  });
 
-  if (!selectedContract) {
-    ui.log.write(
-      "Build script running, let's find some FunC contracts to compile.."
-    );
-    const { contract } = await inquirer.prompt([
-      {
-        type: "list",
-        name: "contract",
-        message: "Which contract do you want to build?",
-        choices: contracts,
-      },
-    ]);
-    selectedContract = contract;
-  } else {
-    const foundContract = contracts.find(
-      (c) => c.toLowerCase() === selectedContract.toLowerCase()
-    );
-    if (!foundContract) {
-      ui.log.write(
-        `Contract wrapper file ${path.join(
-          wrappersDir,
-          `${selectedContract}.ts`
-        )} not found!`
-      );
-      process.exit(1);
-    }
-    selectedContract = foundContract;
-    ui.log.write(`Build script running, compiling ${selectedContract}`);
-  }
+  const { module, contract } = await selectContract(args["--contract"]);
 
-  const contractPath = path.join(wrappersDir, `${selectedContract}.ts`);
+  ui.log.write(`Build script running, compiling ${contract}`);
 
-  const buildArtifactPath = path.join(
-    buildDir,
-    `${selectedContract}.compiled.json`
-  );
+  const contractPath = path.join(wrappersDir, `${contract}.ts`);
+
+  const buildArtifactPath = path.join(buildDir, `${contract}.compiled.json`);
 
   try {
     await fs.unlink(buildArtifactPath);
@@ -55,7 +26,7 @@ const main = async () => {
   const contractModule = await import(contractPath);
 
   if (!contractModule.compile) {
-    ui.log.write(`${selectedContract}.ts is missing the compile() function!`);
+    ui.log.write(`${contract}.ts is missing the compile() function!`);
     process.exit(1);
   }
 
@@ -88,4 +59,4 @@ const main = async () => {
   }
 };
 
-main();
+main().catch(console.error);
