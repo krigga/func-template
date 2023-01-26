@@ -103,6 +103,14 @@ export async function createDeployer(): Promise<Deployer> {
 
     return {
         deploy: async (contract, value, body, waitAttempts = 10) => {
+            const isDeployed = await tc.isContractDeployed(
+                contract.address
+            );
+            if (isDeployed) {
+                ui.log.write("Contract is already deployed!")
+                return
+            }
+
             if (!contract.init) {
                 ui.updateBottomBar("");
                 ui.log.write("Contract has no init!");
