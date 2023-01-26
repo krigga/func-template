@@ -1,6 +1,5 @@
 import { compileFunc } from "@ton-community/func-js";
 import { randomAddress } from "@ton-community/test-utils";
-import { assert } from "console";
 import { readFileSync } from "fs";
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Dictionary, DictionaryValue, OpenedContract, Sender, SendMode, toNano } from "ton-core";
 import { ui } from "../scripts/lib/ui";

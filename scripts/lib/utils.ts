@@ -22,10 +22,10 @@ export function oneOrZeroOf<T extends { [k: string]: boolean | undefined }>(opti
     return opt
 }
 
-export const wrappersDir = path.join(process.cwd(), "wrappers");
+const wrappersDir = path.join(process.cwd(), "wrappers");
 
-export const findContracts = async () =>
-  (await fs.readdir(wrappersDir)).map((f) => path.parse(f).name);
+const findContracts = async () =>
+    (await fs.readdir(wrappersDir)).map((f) => path.parse(f).name);
 
 export async function selectContract(contract?: string) {
     const contracts = await findContracts();
@@ -53,4 +53,37 @@ export async function selectContract(contract?: string) {
     const contractModule = await import(contractPath);
 
     return {contract: selected, module: contractModule};
+}
+
+const scriptsDir = path.join(process.cwd(), "scripts");
+const deployerEnd = '.deploy.ts'
+
+const findDeployers = async () =>
+    (await fs.readdir(scriptsDir)).filter(f => f.endsWith(deployerEnd)).map(f => f.slice(0, f.length - deployerEnd.length))
+
+export async function selectDeployer(hint?: string) {
+    const deployers = await findDeployers();
+
+    let selected: string;
+
+    if (hint) {
+        selected = deployers.find(c => c.toLowerCase() === hint)!;
+        if (selected === undefined) {
+            throw new Error(`Please pick only one of the options: ${deployers.join(', ')}`)
+        }
+    } else {
+        const { deployer } = await inquirer.prompt([
+            {
+                type: "list",
+                name: "deployer",
+                message: "Choose deployer",
+                choices: deployers,
+            },
+        ]);
+        selected = deployer;
+    }
+
+    const deployerPath = path.join(scriptsDir, `${selected}${deployerEnd}`);
+
+    return {deployer: selected, module: await import(deployerPath)};
 }
