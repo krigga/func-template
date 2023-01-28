@@ -1,6 +1,7 @@
 import path from "path";
 import fs from 'fs/promises';
 import inquirer from "inquirer";
+import { ui } from "./ui";
 
 export function sleep(ms: number) {
     return new Promise((resolve) => {
@@ -55,7 +56,7 @@ export async function selectContract(contract?: string) {
     return {contract: selected, module: contractModule};
 }
 
-const scriptsDir = path.join(process.cwd(), "scripts");
+const scriptsDir = path.join(process.cwd(), "scripts", "deployers");
 const deployerEnd = '.deploy.ts'
 
 const findDeployers = async () =>
@@ -71,12 +72,13 @@ export async function selectDeployer(hint?: string) {
         if (selected === undefined) {
             throw new Error(`Please pick only one of the options: ${deployers.join(', ')}`)
         }
+        ui.log.write(`Deploying contract: ${selected}`);
     } else {
         const { deployer } = await inquirer.prompt([
             {
                 type: "list",
                 name: "deployer",
-                message: "Choose deployer",
+                message: "Choose contract to deploy",
                 choices: deployers,
             },
         ]);
