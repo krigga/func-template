@@ -8,9 +8,9 @@ const main = async () => {
         '--contract': String
     })
 
-    const deployer = await createDeployer()
-
     const { deployer: deployerName, module } = await selectDeployer(args['--contract'])
+
+    const deployer = await createDeployer()
 
     if (typeof module.deploy !== 'function') {
         ui.log.write(`${deployerName}.ts is missing the compile() function!`);

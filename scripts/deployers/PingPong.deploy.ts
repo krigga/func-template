@@ -1,6 +1,6 @@
 import { toNano } from "ton-core";
-import { create, testDeployment } from "../wrappers/PingPong";
-import { Deployer } from "./lib/deploy/Deployer";
+import { create, testDeployment } from "../../wrappers/PingPong";
+import { Deployer } from "../lib/deploy/Deployer";
 
 export async function deploy(deployer: Deployer) {
     const pingPong = await create()
